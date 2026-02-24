@@ -1,0 +1,1356 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title> Fursa | Create Order </title>
+
+  <link href="assets/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/css/my-style.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.1/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="assets/css/jquery-ui.css">
+
+  <!-- code added by binal start--->
+  <meta name="msapplication-TileColor" content="#da532c">
+  <meta name="theme-color" content="#ffffff">
+  <!-- code added by binal end--->
+  <style type="text/css">
+    .numberCircle {
+      font-family: "OpenSans-Semibold", Arial, "Helvetica Neue", Helvetica, sans-serif;
+      display: inline-block;
+      color: #fff;
+      text-align: center;
+      line-height: 0px;
+      border-radius: 50%;
+      font-size: 12px;
+      font-weight: 700;
+      min-width: 38px;
+      min-height: 38px;
+    }
+
+    .numberCircle span {
+      display: inline-block;
+      padding-top: 50%;
+      padding-bottom: 50%;
+      margin-left: 1px;
+      margin-right: 1px;
+    }
+
+    .clrTotal {
+      background: #51a529;
+    }
+
+    .clrLike {
+      background: #60a949;
+    }
+
+    .clrDislike {
+      background: #bd3728;
+    }
+
+    .clrUnknown {
+      background: #58aeee;
+    }
+
+    .clrStatusPause {
+      color: #bd3728;
+    }
+
+    .clrStatusPlay {
+      color: #60a949;
+    }
+
+    .LoaderSec {
+      position: fixed;
+      background: #465b97c7;
+      width: 100%;
+      height: 100%;
+      left: 0;
+      top: 0;
+      z-index: 99999999999;
+    }
+
+    .LoaderSec .loader {
+      width: 55px;
+      height: 55px;
+      border: 6px solid #fff;
+      border-bottom-color: #012440;
+      border-radius: 50%;
+      display: inline-block;
+      -webkit-animation: rotation 1s linear infinite;
+      animation: rotation 1s linear infinite;
+      position: fixed;
+      z-index: 9999999999999;
+      transform: translate(-50%, -50%);
+      top: 50%;
+      left: 50%;
+    }
+
+    @keyframes rotation {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    .readonly {
+      background: #bababa !important;
+    }
+  </style>
+
+  <!-- CSS from create.blade.php -->
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    :root {
+      --brand-primary: #012440;
+      --brand-surface: #f8fafc;
+      --brand-border: #e2e8f0;
+    }
+
+    .select2-container {
+      width: 100% !important;
+    }
+
+    .items-table th {
+      background: #f1f5f9;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 700;
+    }
+
+    .items-table td {
+      vertical-align: middle;
+    }
+
+    .btn-remove-row {
+      color: #dc3545;
+      cursor: pointer;
+    }
+
+    .btn-remove-row:hover {
+      color: #a71d2a;
+    }
+
+    .grand-total {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    .customer-section {
+      display: none;
+      background: #fffbeb;
+      border: 1px dashed #fbbf24;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-top: 1rem;
+    }
+
+    .form-switch .form-check-input {
+      width: 30px;
+      height: 15px;
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .summary-row:last-child {
+      border-bottom: none;
+    }
+
+    .type-badge {
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    .time-slot-container {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 8px;
+    }
+
+    .time-slot-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      max-height: 120px;
+      overflow-y: auto;
+    }
+
+    .slot-btn {
+      border: 1px solid #e2e8f0;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      background: #fff;
+      color: #64748b;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .slot-btn:hover {
+      background: #e2e8f0;
+      border-color: #cbd5e1;
+      color: #334155;
+    }
+
+    .slot-btn.active {
+      background: var(--brand-primary);
+      color: #fff;
+      border-color: var(--brand-primary);
+      box-shadow: 0 2px 4px rgba(1, 36, 64, 0.2);
+    }
+
+    .preview-row {
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .preview-row:last-child {
+      border-bottom: none;
+    }
+
+    .preview-badge {
+      width: 24px;
+      height: 32px;
+      border-radius: 6px;
+      background: #f1f5f9;
+    }
+
+    .preview-item-title {
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .preview-item-meta {
+      font-size: 0.7rem;
+    }
+
+    .preview-qty,
+    .preview-price,
+    .preview-total {
+      font-size: 0.8rem;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrapper">
+
+    <div class="LoaderSec d-none">
+      <span class="loader"></span>
+    </div>
+
+    <!-- Header -->
+    <div class="main-header">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col">
+            <nav class="navbar navbar-expand">
+              <ul class="navbar-nav">
+                <li class="nav-item bars">
+                  <a class="nav-link" data-widget="pushmenu" href="#" role="button">
+                    <span class="line"></span><span class="line"></span><span class="line"></span>
+                  </a>
+                </li>
+                <li class="nav-item header-title"><a href="#" class="nav-link"> Fursa </a></li>
+              </ul>
+            </nav>
+          </div>
+          <div class="col">
+            <div class="premium-merchant flex-div">
+              <img src="assets/logo.webp" alt="Fursa"
+                style="height: 60px;width: 60px;border-radius: 50%;border: 3px solid #de2a1b;">
+            </div>
+          </div>
+          <div class="col">
+            <div class="user-account flex-div">
+              <p>Demo User<br> <span id="user_clock_header">Wednesday, October 25, 2023 11:42 AM</span></p>
+              <img src="assets/images/user-noti.svg" alt="user-notification" class="">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <aside class="main-sidebar">
+      <div class="logo" style="display:none;">
+        <a href="#" class="brand-link"><img src="assets/images/fursaa_newLogo.png" alt="Fursa Logo" class="img-logo"
+            style="width:220px;"></a>
+      </div>
+      <h1 class="panel-title">ADMIN PANEL</h1>
+      <div class="sidebar">
+        <nav class="mt-2">
+          <ul class="nav" role="menu">
+            <li class="nav-item">
+              <a href="dashboard.html" class="nav-link"> Dashboard </a>
+            </li>
+            <li class="nav-item">
+              <a href="#" class="nav-link"> Bulk Order Management <i class="bi bi-chevron-down"></i></a>
+              <ul class="nav nav-dropdown" style="display:block;">
+                <li class="nav-item"><a href="#" class="nav-link"> Categories </a></li>
+                <li class="nav-item"><a href="#" class="nav-link"> Units </a></li>
+                <li class="nav-item"><a href="#" class="nav-link"> Products </a></li>
+                <li class="nav-item"><a href="#" class="nav-link"> Pricing Tiers </a></li>
+                <li class="nav-item"><a href="#" class="nav-link"> Bulk Price Management </a></li>
+                <li class="nav-item"><a href="#" class="nav-link active"> Orders </a></li>
+                <li class="nav-item"><a href="#" class="nav-link"> Grievance Reporting </a></li>
+              </ul>
+            </li>
+            <li class="nav-item">
+              <a href="#" class="nav-link"> Settings <i class="bi bi-chevron-down"></i></a>
+            </li>
+            <li class="nav-item">
+              <ul class="nav nav-dropdown">
+                <li class="nav-item"><a href="#" class="nav-link">Logout</a></li>
+              </ul>
+            </li>
+          </ul>
+        </nav>
+        <div class="version"><img src="assets/images/version.svg"> VERSION 1.0.0</div>
+      </div>
+    </aside>
+
+    <div class="content-wrapper">
+      <div class="container-fluid">
+
+        <div class="row align-items-center mb-4">
+          <div class="col-md-8">
+            <h4 class="mb-1">Create Order</h4>
+            <p class="text-muted small mb-0">Create a new order</p>
+          </div>
+          <div class="col-md-4 text-end">
+            <a href="#" class="btn btn-outline-secondary btn-sm">
+              <i class="fas fa-arrow-left me-1"></i> Back
+            </a>
+          </div>
+        </div>
+
+        <form id="orderForm" method="POST" action="#">
+
+          <div class="row">
+            <div class="col-lg-8">
+              <!-- Order Details Card -->
+              <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white border-bottom">
+                  <h6 class="mb-0"><i class="fas fa-info-circle me-2 text-primary"></i>Order Details</h6>
+                </div>
+                <div class="card-body">
+                  <!-- Row 1: Order From / Dispatched From -->
+                  <div class="row">
+                    <div class="col-md-6 mb-3">
+                      <label class="form-label fw-semibold">Order From <span class="text-danger">*</span> </label>
+                      <select class="form-control select2" id="order_from_store" required>
+                        <option value="">Select Store</option>
+                        <optgroup label="FRANCHISE">
+                          <option value="1" data-order-type="franchise">Store A (Franchise)</option>
+                          <option value="2" data-order-type="franchise">Store B (Franchise)</option>
+                        </optgroup>
+                        <optgroup label="COMPANY">
+                          <option value="3" data-order-type="company">Store C (Company)</option>
+                        </optgroup>
+                      </select>
+                      <input type="hidden" name="receiver_store_id" id="receiver_store_id">
+                      <input type="hidden" name="order_type" id="order_type" value="company">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                      <label class="form-label fw-semibold">Dispatched From <span class="text-danger">*</span> </label>
+                      <select class="form-control select2" name="sender_store_id" id="sender_store_id" required>
+                        <option value="">Select Store</option>
+                        <optgroup label="FACTORY">
+                          <option value="10" selected data-order-type="company">Main Factory</option>
+                        </optgroup>
+                      </select>
+                    </div>
+                  </div>
+
+                  <!-- Row 2: Ordering for Customer -->
+                  <div class="row">
+                    <div class="col-12 mb-2">
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="for_customer" id="for_customer" value="1">
+                        <label class="form-check-label fw-semibold" for="for_customer">
+                          Ordering for Customer
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Row 3 + 4: Customer Details -->
+                  <div id="customerSection" class="customer-section">
+                    <div class="row">
+                      <div class="col-md-6 mb-3">
+                        <label class="form-label">Customer Name</label>
+                        <input type="text" class="form-control" name="customer_first_name" id="customer_first_name">
+                      </div>
+                      <div class="col-md-6 mb-3">
+                        <label class="form-label">Contact Number</label>
+                        <input type="text" class="form-control" name="customer_phone_number" id="customer_phone_number">
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-12 mb-3">
+                        <label class="form-label">Delivery Remarks</label>
+                        <textarea class="form-control" name="customer_remark" id="customer_remark" rows="2"></textarea>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Row 5: Delivery Date + Time Slot -->
+                  <div class="row">
+                    <div class="col-md-6 mb-3">
+                      <label class="form-label fw-semibold">Delivery Date</label>
+                      <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-calendar-alt text-muted"></i></span>
+                        <input type="text" class="form-control datepicker" name="delivery_date" id="delivery_date"
+                          placeholder="Select Date" autocomplete="off">
+                      </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                      <label class="form-label fw-semibold">Time Slot</label>
+                      <select class="form-control select2" name="time_slot" id="time_slot_select">
+                        <option value="">Select Time Slot</option>
+                      </select>
+                      <div id="time_slot_error"></div>
+                    </div>
+                  </div>
+
+                  <!-- Row 6: Delivery Address -->
+                  <div class="row">
+                    <div class="col-12 mb-3">
+                      <label class="form-label fw-semibold">Delivery Address <span class="text-danger">*</span> </label>
+                      <textarea class="form-control" name="delivery_address" id="delivery_address" rows="2"></textarea>
+                    </div>
+                  </div>
+
+                  <!-- Row 7: Delivery Address Map Link -->
+                  <div class="row">
+                    <div class="col-12 mb-3">
+                      <label class="form-label fw-semibold">Delivery Address Map Link</label>
+                      <div class="input-group">
+                        <input type="text" class="form-control" name="delivery_link" id="delivery_link"
+                          placeholder="Paste Google Map link">
+                        <button class="btn btn-outline-secondary" type="button" id="toggle_delivery_link_edit">
+                          <i class="fas fa-lock"></i>
+                        </button>
+                        <button class="btn btn-outline-secondary fetch-address" type="button"
+                          id="toggle_delivery_link_edit" title="Get Full Address from Link"
+                          data-toplace="delivery_address" data-toget="delivery_link">
+                          <i class="fas fa-search"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Row 8: Handling Instructions -->
+                  <div class="row">
+                    <div class="col-12 mb-3">
+                      <label class="form-label fw-semibold">Handling Instructions</label>
+                      <select class="form-control select2" name="handling_instructions[]" id="handling_instructions"
+                        multiple>
+                        <option value="1">Fragile</option>
+                        <option value="2">Keep Frozen</option>
+                        <option value="3">Handle with Care</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <!-- Row 9: Handling Instructions Remarks -->
+                  <div class="row">
+                    <div class="col-12 mb-3">
+                      <label class="form-label fw-semibold">Handling Instructions Remarks</label>
+                      <textarea class="form-control" name="handling_note" id="handling_note" rows="2"></textarea>
+                    </div>
+                  </div>
+
+                  <!-- Row 10: Driver & Vehicle -->
+                  <div class="row">
+                    <div class="col-md-6 mb-3">
+                      <label class="form-label fw-semibold">Driver Selection</label>
+                      <select class="form-control select2" name="delivery_user" id="delivery_user">
+                        <option value="">Select Driver</option>
+                        <option value="1">Ramesh Kumar</option>
+                        <option value="2">Suresh Patel</option>
+                      </select>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                      <label class="form-label fw-semibold">Vehicle Selection</label>
+                      <select class="form-control select2" name="vehicle_id" id="vehicle_id">
+                        <option value="">Select Vehicle</option>
+                        <option value="1">Tata Ace - GJ01AB1234</option>
+                        <option value="2">Mahindra Bolero - GJ01CD5678</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <!-- Row 11: Collect Utencils on Delivery -->
+                  <div class="row">
+                    <div class="col-12 mb-2">
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="utencils_collected"
+                          id="utencils_collected" value="1">
+                        <label class="form-check-label fw-semibold" for="utencils_collected">
+                          Collect Utencils on Delivery
+                        </label>
+                      </div>
+                    </div>
+                    <div class="col-12 mb-3">
+                      <div class="d-flex justify-content-between align-items-center mb-2">
+                        <label class="form-label mb-0 fw-semibold">Utencils Movement</label>
+                        <button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal"
+                          data-bs-target="#utencilModal">
+                          <i class="fas fa-exchange-alt me-1"></i>Manage Utencils
+                        </button>
+                      </div>
+                      <div class="table-responsive">
+                        <table class="table table-sm mb-0">
+                          <thead class="text-muted small">
+                            <tr>
+                              <th>Utencil</th>
+                              <th width="80">Sent</th>
+                              <th width="80">Received</th>
+                              <th width="80">Balance</th>
+                            </tr>
+                          </thead>
+                          <tbody id="utencilSummaryBody">
+                            <tr class="text-muted small" id="utencilSummaryEmptyRow">
+                              <td colspan="4" class="text-center">No utencils movement planned yet.</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Row 12: Collect Amount on Delivery -->
+                  <div class="row border-top pt-3 mt-2">
+                    <div class="col-12 mb-2">
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="collect_on_delivery"
+                          id="collect_on_delivery" value="1">
+                        <label class="form-check-label fw-semibold" for="collect_on_delivery">
+                          Collect Amount on Delivery
+                        </label>
+                      </div>
+                    </div>
+                    <div class="col-12 mb-3" id="collect_amount_wrapper" style="display:none;">
+                      <label class="form-label fw-semibold">Amount Received</label>
+                      <input type="number" step="0.01" min="0" class="form-control" name="amount_collected"
+                        id="amount_collected" placeholder="0.00">
+                    </div>
+                  </div>
+                  <input type="hidden" name="payment_received" id="payment_received_hidden" value="0">
+                </div>
+              </div>
+
+              <!-- Addresses Section -->
+              <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white border-bottom d-flex justify-content-between align-items-center">
+                  <h6 class="mb-0"><i class="fas fa-map-marker-alt me-2 text-primary"></i>Addresses</h6>
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="same_as_bill_to_switch"
+                      name="bill_to_same_as_ship_to">
+                    <label class="form-check-label small fw-bold" for="same_as_bill_to_switch">Same as Bill To</label>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="row">
+                    <!-- Bill To Column -->
+                    <div class="col-md-6 border-end">
+                      <h6 class="mb-3 text-primary">Bill To</h6>
+                      <div class="row">
+                        <div class="col-md-12 mb-2">
+                          <label class="form-label small fw-bold">Name</label>
+                          <input type="text" class="form-control form-control-sm" name="billing_name" id="billing_name">
+                        </div>
+                        <div class="col-md-6 mb-2">
+                          <label class="form-label small fw-bold">Contact Number</label>
+                          <input type="text" class="form-control form-control-sm" name="billing_contact_number"
+                            id="billing_contact_number">
+                        </div>
+                        <div class="col-md-6 mb-2">
+                          <label class="form-label small fw-bold">GST IN</label>
+                          <input type="text" class="form-control form-control-sm" name="billing_gst_in"
+                            id="billing_gst_in">
+                        </div>
+                        <div class="col-md-12 mb-2">
+                          <label class="form-label small fw-bold">Full Address</label>
+                          <textarea class="form-control form-control-sm" name="billing_address_1" id="billing_address_1"
+                            style="field-sizing: content;"></textarea>
+                        </div>
+                        <div class="col-md-12 mb-2">
+                          <label class="form-label small fw-bold">Google Map Link</label>
+                          <div class="input-group input-group-sm">
+                            <input type="url" class="form-control" name="billing_google_map_link"
+                              id="billing_google_map_link" placeholder="Paste Google Map link or use picker">
+                            <button class="btn btn-outline-primary fetch-address" type="button"
+                              title="Get Full Address from Link" data-toplace="billing_address_1"
+                              data-toget="billing_google_map_link">
+                              <i class="fas fa-search"></i>
+                            </button>
+                            <button class="btn btn-outline-primary open-map-picker-btn" type="button"
+                              data-address-context="billing" data-bs-toggle="modal" data-bs-target="#googleMapModal"
+                              title="Find Address in Map & Get Link">
+                              <i class="fas fa-map-marked-alt"></i>
+                            </button>
+                          </div>
+                          <input type="hidden" name="billing_latitude" id="billing_latitude">
+                          <input type="hidden" name="billing_longitude" id="billing_longitude">
+                        </div>
+                      </div>
+                    </div>
+                    <!-- Ship To Column -->
+                    <div class="col-md-6">
+                      <h6 class="mb-3 text-primary">Ship To</h6>
+                      <div class="row">
+                        <div class="col-md-12 mb-2">
+                          <label class="form-label small fw-bold">Name</label>
+                          <input type="text" class="form-control form-control-sm" name="shipping_name"
+                            id="shipping_name">
+                        </div>
+                        <div class="col-md-12 mb-2">
+                          <label class="form-label small fw-bold">Contact Number</label>
+                          <input type="text" class="form-control form-control-sm" name="shipping_contact_number"
+                            id="shipping_contact_number">
+                        </div>
+                        <div class="col-md-12 mb-2">
+                          <label class="form-label small fw-bold">Full Address</label>
+                          <input type="text" class="form-control form-control-sm" name="shipping_address_1"
+                            id="shipping_address_1">
+                        </div>
+                        <div class="col-md-12 mb-2">
+                          <label class="form-label small fw-bold">Google Map Link</label>
+                          <div class="input-group input-group-sm">
+                            <input type="url" class="form-control" name="shipping_google_map_link"
+                              id="shipping_google_map_link" placeholder="Paste Google Map link or use picker">
+                            <button class="btn btn-outline-primary fetch-address" type="button"
+                              title="Get Full Address from Link" data-toplace="shipping_address_1"
+                              data-toget="shipping_google_map_link">
+                              <i class="fas fa-search"></i>
+                            </button>
+                            <button class="btn btn-outline-primary open-map-picker-btn" type="button"
+                              data-address-context="shipping" data-bs-toggle="modal" data-bs-target="#googleMapModal"
+                              title="Find Address in Map & Get Link">
+                              <i class="fas fa-map-marked-alt"></i>
+                            </button>
+                          </div>
+                          <input type="hidden" name="shipping_latitude" id="shipping_latitude">
+                          <input type="hidden" name="shipping_longitude" id="shipping_longitude">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Items Card -->
+              <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-bottom d-flex justify-content-between align-items-center">
+                  <h6 class="mb-0"><i class="fas fa-boxes me-2 text-primary"></i>Order Items</h6>
+                  <button type="button" class="btn btn-primary btn-sm" id="addItemRow">
+                    <i class="fas fa-plus me-1"></i> Add Item
+                  </button>
+                </div>
+                <div class="card-body p-0">
+                  <div class="table-responsive">
+                    <table class="table items-table mb-0">
+                      <thead>
+                        <tr>
+                          <th width="20%">Category</th>
+                          <th width="22%">Product</th>
+                          <th width="15%">Unit</th>
+                          <th width="12%">Price</th>
+                          <th width="10%">Qty</th>
+                          <th width="12%">Total</th>
+                          <th width="5%"></th>
+                        </tr>
+                      </thead>
+                      <tbody id="itemsTableBody"></tbody>
+                    </table>
+                  </div>
+                  <div id="noItemsMessage" class="text-center text-muted py-4">
+                    <i class="fas fa-inbox fa-2x mb-2 opacity-50"></i><br>
+                    Click "Add Item" to add products.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-4">
+
+
+              <!-- Summary Card -->
+              <div class="card border-0 mb-2 shadow-sm">
+                <div class="card-header bg-white border-bottom">
+                  <h6 class="mb-0"><i class="fas fa-receipt me-2 text-primary"></i>Order Summary</h6>
+                </div>
+                <div class="card-body p-0">
+                  <!-- Main Items Table -->
+                  <div class="table-responsive">
+                    <table class="table table-sm table-borderless mb-0" style="font-size: 0.85rem;">
+                      <thead class="border-bottom bg-light">
+                        <tr>
+                          <th class="ps-3 py-2">Item</th>
+                          <th class="text-end py-2">Qty.</th>
+                          <th class="text-end py-2">Rate</th>
+                          <th class="text-end pe-3 py-2">Amount</th>
+                        </tr>
+                      </thead>
+                      <tbody id="summaryMainItemsBody">
+                        <!-- Dynamic Items -->
+                      </tbody>
+                      <tfoot class="border-top">
+                        <tr>
+                          <td colspan="3" class="ps-3 fw-bold py-2">Sub-total</td>
+                          <td class="text-end pe-3 fw-bold py-2">₹<span id="summarySubtotal">0.00</span></td>
+                        </tr>
+                        <tr>
+                          <td colspan="3" class="ps-3 text-muted">SGST (<span id="summarySgstPercent">9</span>%)</td>
+                          <td class="text-end pe-3 text-muted">+₹<span id="summarySgstVal">0.00</span></td>
+                        </tr>
+                        <tr>
+                          <td colspan="3" class="ps-3 text-muted">CGST (<span id="summaryCgstPercent">9</span>%)</td>
+                          <td class="text-end pe-3 text-muted">+₹<span id="summaryCgstVal">0.00</span></td>
+                        </tr>
+                        <tr class="border-top">
+                          <td colspan="3" class="ps-3 fw-bold py-2">Item Total</td>
+                          <td class="text-end pe-3 fw-bold py-2">₹<span id="summaryItemTotal">0.00</span></td>
+                        </tr>
+                      </tfoot>
+                    </table>
+                  </div>
+
+                  <!-- Packaging Items -->
+                  <div class="p-3 border-top">
+                    <h6 class="small fw-bold text-muted text-uppercase mb-2">Packaging Items:</h6>
+                    <div id="packagingItemsContainer">
+                      <!-- Dynamic Packaging Items -->
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mt-2 border-top pt-2">
+                      <span class="fw-bold small">Packaging Total</span>
+                      <span class="fw-bold small">₹<span id="summaryPackagingTotal">0.00</span></span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mt-1">
+                      <span class="fw-bold small text-primary">Total amount with Packaging</span>
+                      <span class="fw-bold small text-primary">₹<span id="summaryTotalWithPackaging">0.00</span></span>
+                    </div>
+                  </div>
+
+                  <!-- Service -->
+                  <div class="p-3 border-top">
+                    <h6 class="small fw-bold text-muted text-uppercase mb-2">Service:</h6>
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                      <span class="small">1. Servers</span>
+                      <span class="small text-muted fst-italic">as per actual</span>
+                    </div>
+                    <div class="border-top pt-2 mt-2">
+                      <div class="d-flex justify-content-between align-items-center">
+                        <span class="fw-bold small">Service Total</span>
+                        <span class="small text-muted fst-italic">as per actual</span>
+                      </div>
+                      <small class="text-muted d-block mt-1">(tax applicable on actual amount)</small>
+                    </div>
+                  </div>
+
+                  <!-- Other Items -->
+                  <div class="p-3 border-top">
+                    <h6 class="small fw-bold text-muted text-uppercase mb-2">Other items</h6>
+                    <div id="otherItemsContainer">
+                      <!-- Dynamic Other Items -->
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mt-2 border-top pt-2">
+                      <span class="fw-bold small">Other items total</span>
+                      <span class="small text-muted fst-italic">as per actual</span>
+                    </div>
+                  </div>
+
+                  <!-- Grand Total & Notes -->
+                  <div class="p-3 border-top bg-light">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                      <span class="fw-bold">Grand Total</span>
+                      <span class="fw-bold text-primary fs-5">₹<span id="grandTotalDisplay">0.00</span></span>
+                    </div>
+                    <p class="small text-muted mb-0 fst-italic">Additional items will be added as per actual in final
+                      invoice.</p>
+                  </div>
+
+                  <!-- Bill To Section (kept from original) -->
+                  <div class="p-3 border-top">
+                    <label class="form-label small fw-bold mb-2">Bill To <span class="text-danger">*</span> </label>
+                    <div class="d-flex gap-3 mb-2">
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="bill_to_type" id="bt_store" value="store"
+                          checked>
+                        <label class="form-check-label small" for="bt_store">Store</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="bill_to_type" id="bt_user" value="user">
+                        <label class="form-check-label small" for="bt_user">User</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="bill_to_type" id="bt_factory"
+                          value="factory">
+                        <label class="form-check-label small" for="bt_factory">Factory</label>
+                      </div>
+                    </div>
+
+                    <div id="bill_to_store_wrapper">
+                      <select class="form-control select2" name="bill_to" id="bill_to_store">
+                        <option value="">Select Store</option>
+                        <option value="1">Store A</option>
+                        <option value="2">Store B</option>
+                      </select>
+                    </div>
+                    <div id="bill_to_user_wrapper" style="display: none;">
+                      <select class="form-control select2" name="bill_to" id="bill_to_user" disabled>
+                        <option value="">Select User</option>
+                        <option value="1">User A</option>
+                      </select>
+                    </div>
+                    <div id="bill_to_factory_wrapper" style="display: none;">
+                      <select class="form-control select2" name="bill_to" id="bill_to_factory" disabled>
+                        <option value="">Select Factory</option>
+                        <option value="1">Factory A</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-footer bg-white border-top">
+                  <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-check me-1"></i> Create Order
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </form>
+
+        <!-- Google Map Modal -->
+        <div class="modal fade" id="googleMapModal" tabindex="-1" aria-labelledby="googleMapModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="googleMapModalLabel"><i class="fas fa-map-marker-alt me-2"></i>Select
+                  Location</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <div class="mb-3">
+                  <label for="map_search_input" class="form-label small fw-bold">Search Location</label>
+                  <input type="text" id="map_search_input" class="form-control"
+                    placeholder="Search by place, address, etc.">
+                </div>
+                <div id="mapContainer" style="width: 100%; height: 500px;"></div>
+              </div>
+              <div class="modal-footer">
+                <div class="me-auto small">
+                  <span class="text-muted">Lat:</span> <span id="selected_lat_display">-</span>,
+                  <span class="text-muted">Lng:</span> <span id="selected_lng_display">-</span>
+                </div>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="applyMapSelectionBtn">
+                  <i class="fas fa-check me-1"></i>Apply
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <template id="itemRowTemplate">
+          <tr class="item-row" data-row-index="__INDEX__">
+            <td>
+              <select class="form-control form-control-sm category-select" name="items[__INDEX__][category_id]"
+                required>
+                <option value="">Category</option>
+                <option value="1">Category A</option>
+                <option value="2">Category B</option>
+              </select>
+            </td>
+            <td>
+              <select class="form-control form-control-sm product-select" name="items[__INDEX__][product_id]" required
+                disabled>
+                <option value="">Select Product</option>
+              </select>
+            </td>
+            <td>
+              <select class="form-control form-control-sm unit-select" name="items[__INDEX__][unit_id]" required
+                disabled>
+                <option value="">Unit</option>
+              </select>
+            </td>
+            <td>
+              <input type="number" step="0.01" min="0" class="form-control form-control-sm price-input"
+                name="items[__INDEX__][unit_price]" placeholder="0.00" required>
+              <input type="hidden" class="price-ge" name="items[__INDEX__][ge_price]" value="0">
+              <input type="hidden" class="price-gi" name="items[__INDEX__][gi_price]" value="0">
+            </td>
+            <td>
+              <input type="number" step="0.01" min="0.01" class="form-control form-control-sm qty-input"
+                name="items[__INDEX__][quantity]" placeholder="1" required>
+            </td>
+            <td><strong class="row-total">₹0.00</strong></td>
+            <td class="text-center"><span class="btn-remove-row" title="Remove"><i
+                  class="fas fa-times-circle fa-lg"></i></span></td>
+          </tr>
+        </template>
+
+        <template id="chargeRowTemplate">
+          <div class="d-flex align-items-center mb-1 charge-row" data-index="__INDEX__">
+            <input type="text" name="additional_charges[__INDEX__][title]"
+              class="form-control form-control-sm me-2 charge-title-input" placeholder="Title" required />
+            <input type="number" step="0.01" min="0" name="additional_charges[__INDEX__][amount]"
+              class="form-control form-control-sm me-2 charge-amount-input" placeholder="0.00" required />
+            <button type="button" class="btn btn-link text-danger p-0 btn-remove-charge" title="Remove"><i
+                class="fas fa-times-circle fa-lg"></i></button>
+          </div>
+        </template>
+
+        <!-- Utencil Movement Modal -->
+        <div class="modal fade" id="utencilModal" tabindex="-1" aria-labelledby="utencilModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="utencilModalLabel">Manage Utencil Movement</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Utencil</label>
+                  <select class="form-control" id="modal_utencil_id">
+                    <option value="">Select Utencil</option>
+                    <option value="1">Container A</option>
+                  </select>
+                  <span class="text-danger small d-none" id="modal_utencil_error"></span>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Quantity</label>
+                  <input type="number" step="0.01" min="0.01" class="form-control" id="modal_utencil_qty">
+                  <span class="text-danger small d-none" id="modal_qty_error"></span>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Type</label>
+                  <select class="form-control" id="modal_utencil_type">
+                    <option value="">Select Type</option>
+                    <option value="add" selected>Add</option>
+                    <option value="deduct">Deduct</option>
+                  </select>
+                  <span class="text-danger small d-none" id="modal_type_error"></span>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label fw-semibold">Note</label>
+                  <textarea class="form-control" id="modal_utencil_note" rows="2"
+                    placeholder="Optional note"></textarea>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="saveUtencilMovementBtn">
+                  <i class="fas fa-check me-1"></i>Save
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/js/jquery.min.js"></script>
+  <script src="assets/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/js/jquery-ui.js"></script>
+
+  <script>
+    $(document).ready(function () {
+      $(".main-header ul.navbar-nav li.nav-item.bars a.nav-link").click(function () {
+        $("aside.main-sidebar").toggleClass("close-nav");
+        $(".content-wrapper").toggleClass("close-nav");
+        $(".main-header").toggleClass("close-nav");
+      });
+
+      $("aside.main-sidebar .sidebar nav > ul > li.nav-item > a.nav-link").click(function () {
+        $(this).toggleClass("dd-close");
+      });
+
+      var url = window.location.href;
+      $('.nav-dropdown li a').find('.active').removeClass('active');
+      // Simple active state logic for demo
+      $('.nav-dropdown li a[href="new-order-screen.html"]').addClass('active');
+    });
+  </script>
+
+  <script src="assets/js/jquery-validate.min.js"></script>
+  <script src="assets/js/swal.min.js"></script>
+
+  <script>
+    function showTime() {
+      var date = new Date()
+      const options = { weekday: "long", year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit" };
+      return date.toLocaleString(undefined, options).replace('at', '');
+    }
+    window.setInterval(function () {
+      document.getElementById("user_clock_header").innerHTML = showTime();
+    }, 1000);
+  </script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      var sidebar = document.querySelector('.main-sidebar');
+      if (sidebar) {
+        var scrollPos = localStorage.getItem('sidebar_scroll_position');
+        if (scrollPos) { sidebar.scrollTop = scrollPos; }
+        sidebar.addEventListener('scroll', function () { localStorage.setItem('sidebar_scroll_position', sidebar.scrollTop); });
+      }
+    });
+    function isset(...variables) { return variables.every(variable => { if (variable === undefined || variable === null) return false; if (Array.isArray(variable)) return variable.length > 0; if (typeof variable === 'object') return Object.keys(variable).length > 0; return true; }); }
+    function anyIsset(...variables) { return variables.some(variable => { if (variable === undefined || variable === null) return false; if (Array.isArray(variable)) return variable.length > 0; if (typeof variable === 'object') return Object.keys(variable).length > 0; return true; }); }
+  </script>
+
+
+  <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAP_API_KEY&libraries=places" async
+    defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+  <script>
+    $(document).ready(function () {
+      let rowIndex = 0;
+      let CURRENCY_SYMBOL = "₹";
+      let packagingItems = [
+        { name: "Cups", qty: 160, rate: 5.00, sgst: 9, cgst: 9 },
+        { name: "Spoons", qty: 160, rate: 2.00, sgst: 9, cgst: 9 }
+      ];
+      let otherItems = [
+        { name: "Transport", amount: 500 }
+      ];
+
+      // $.ajaxSetup({ headers: { 'X-CSRF-TOKEN': "" } }); // Removed CSRF for static HTML
+      $('.select2').select2();
+
+      $('#modal_utencil_id').select2({ dropdownParent: $('#utencilModal') });
+
+      $('.datepicker').datepicker({ dateFormat: 'yy-mm-dd', minDate: 0, changeMonth: true, changeYear: true });
+
+      function generateTimeSlots() {
+        const startTime = 0; const endTime = 23;
+        let optionsHtml = '<option value="">Select Time Slot</option>';
+        for (let hour = startTime; hour < endTime; hour++) {
+          for (let min = 0; min < 60; min += 30) {
+            let startH = hour.toString().padStart(2, '0');
+            let startM = min.toString().padStart(2, '0');
+            let nextHour = hour;
+            let nextMin = min + 30;
+            if (nextMin >= 60) { nextHour++; nextMin = 0; }
+            let endH = nextHour.toString().padStart(2, '0');
+            let endM = nextMin.toString().padStart(2, '0');
+            let slot = `${startH}:${startM}-${endH}:${endM}`;
+            let h = parseInt(startH); let suffix = h >= 12 ? 'PM' : 'AM'; let h12 = h % 12 || 12;
+            let label = `${h12}:${startM} ${suffix} - ${parseInt(endH) % 12 || 12}:${endM} ${parseInt(endH) >= 12 ? 'PM' : 'AM'}`;
+            optionsHtml += `<option value="${slot}">${label}</option>`;
+          }
+        }
+        $('#time_slot_select').html(optionsHtml);
+      }
+      generateTimeSlots();
+      $('#time_slot_select').select2({ placeholder: 'Select Time Slot', allowClear: true });
+
+      $('#order_from_store').on('change', function () {
+        const $opt = $(this).find('option:selected');
+        $('#receiver_store_id').val($opt.val());
+        $('#order_type').val($opt.data('order-type') || 'company');
+      });
+
+      $('#for_customer').on('change', function () {
+        if ($(this).is(':checked')) {
+          $('#customerSection').slideDown();
+          $('#customer_first_name, #customer_phone_number').prop('required', true);
+        } else {
+          $('#customerSection').slideUp();
+          $('#customer_first_name, #customer_phone_number').prop('required', false).val('');
+          $('#customer_remark').val('');
+        }
+      });
+
+      // Mock Fetch Address
+      $('.fetch-address').on('click', function () {
+        let toGet = $(this).data('toget');
+        let toPlace = $(this).data('toplace');
+        let url = $(`#${toGet}`).val();
+        if (url) {
+          $(`#${toPlace}`).text('123 Mock Address, City, State, Country'); // Mock logic
+        } else {
+          Swal.fire('Failed', 'Please enter map link to fetch address', 'error');
+        }
+      });
+
+      // Add Item Row
+      $('#addItemRow').on('click', function () {
+        const orderFromStore = $('#order_from_store').val();
+        if (!orderFromStore) {
+          Swal.fire({ icon: 'warning', title: 'Select "Order From"', text: 'Please select "Order From" before adding items.' });
+          return;
+        }
+        const template = $('#itemRowTemplate').html().replace(/__INDEX__/g, rowIndex);
+        $('#itemsTableBody').append(template);
+        $('#noItemsMessage').hide();
+
+        const $newRow = $(`tr[data-row-index="${rowIndex}"]`);
+        $newRow.find('.category-select').select2({ placeholder: 'Category', width: '100%' });
+        $newRow.find('.product-select').select2({ placeholder: 'Product', width: '100%' });
+        $newRow.find('.unit-select').select2({ placeholder: 'Unit', width: '100%' });
+
+        rowIndex++;
+        updateSummary();
+      });
+
+      $(document).on('click', '.btn-remove-row', function () {
+        const $row = $(this).closest('tr');
+        Swal.fire({
+          title: 'Remove Item?', text: "Are you sure?", icon: 'warning', showCancelButton: true, confirmButtonColor: '#d33', confirmButtonText: 'Yes'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            $row.remove();
+            if ($('#itemsTableBody tr').length === 0) $('#noItemsMessage').show();
+            updateSummary();
+          }
+        });
+      });
+
+      // Category Change (Mock)
+      $(document).on('change', '.category-select', function () {
+        const $row = $(this).closest('tr');
+        const $productSelect = $row.find('.product-select');
+        const $unitSelect = $row.find('.unit-select');
+
+        $productSelect.html('<option value="">Loading...</option>').prop('disabled', true);
+        $unitSelect.html('<option value="">Unit</option>').prop('disabled', true);
+
+        // Mock Response
+        setTimeout(() => {
+          let options = '<option value="">Select Product</option>';
+          options += '<option value="1" data-sku="P1">Panchgini (ltr)</option><option value="2" data-sku="P2">Kesari Pista basudi</option>';
+          $productSelect.html(options).prop('disabled', false).trigger('change.select2');
+        }, 300);
+      });
+
+      // Product Change (Mock)
+      $(document).on('change', '.product-select', function () {
+        const $row = $(this).closest('tr');
+        const $unitSelect = $row.find('.unit-select');
+        $unitSelect.html('<option value="">Loading...</option>').prop('disabled', true);
+
+        // Mock Response
+        setTimeout(() => {
+          let options = '<option value="">Select Unit</option>';
+          options += '<option value="1">Ltr</option><option value="2">Kg</option>';
+          $unitSelect.html(options).prop('disabled', false).trigger('change.select2');
+        }, 300);
+      });
+
+      // Unit Change (Mock)
+      $(document).on('change', '.unit-select', function () {
+        const $row = $(this).closest('tr');
+        const unitId = $(this).val();
+        if (!unitId) return;
+
+        // Mock Price
+        const price = 240.00; // Default mock price
+        if ($row.find('.product-select option:selected').text().includes('Panchgini')) {
+          $row.find('.price-input').val(360.00);
+          $row.find('.price-input').data('ge', 360.00);
+        } else {
+          $row.find('.price-input').val(price.toFixed(2));
+          $row.find('.price-input').data('ge', price);
+        }
+        calculateRowTotal($row);
+      });
+
+      $(document).on('input', '.qty-input', function () {
+        calculateRowTotal($(this).closest('tr'));
+      });
+
+      function calculateRowTotal($row) {
+        const price = parseFloat($row.find('.price-input').data('ge')) || parseFloat($row.find('.price-input').val()) || 0;
+        const qty = parseFloat($row.find('.qty-input').val()) || 0;
+        $row.find('.row-total').text(CURRENCY_SYMBOL + (price * qty).toFixed(2));
+        updateSummary();
+      }
+
+      function renderPackagingItems() {
+        let html = '';
+        let totalPackaging = 0;
+        packagingItems.forEach((item, index) => {
+          let amount = item.qty * item.rate;
+          let sgstAmount = (amount * item.sgst / 100);
+          let cgstAmount = (amount * item.cgst / 100);
+          totalPackaging += amount + sgstAmount + cgstAmount;
+
+          html += `
+            <div class="mb-2 border-bottom pb-2">
+                <div class="d-flex justify-content-between">
+                    <span class="small">${index + 1}. ${item.name}</span>
+                    <span class="small">${item.qty.toFixed(2)} x ${item.rate.toFixed(2)}</span>
+                    <span class="small fw-bold">${CURRENCY_SYMBOL}${amount.toFixed(2)}</span>
+                </div>
+                <div class="d-flex justify-content-between ps-3">
+                    <span class="small text-muted">SGST (${item.sgst}%)</span>
+                    <span class="small text-muted">${CURRENCY_SYMBOL}${sgstAmount.toFixed(2)}</span>
+                </div>
+                 <div class="d-flex justify-content-between ps-3">
+                    <span class="small text-muted">CGST (${item.cgst}%)</span>
+                    <span class="small text-muted">${CURRENCY_SYMBOL}${cgstAmount.toFixed(2)}</span>
+                </div>
+            </div>`;
+        });
+        $('#packagingItemsContainer').html(html);
+        $('#summaryPackagingTotal').text(totalPackaging.toFixed(2));
+        return totalPackaging;
+      }
+
+      function renderOtherItems() {
+        let html = '';
+        let total = 0;
+        otherItems.forEach(item => {
+          total += item.amount; // In real mock, this might be "actual"
+          html += `<div class="d-flex justify-content-between mb-1">
+                <span class="small">${item.name}</span>
+                <span class="small text-muted fst-italic">as per actual</span> 
+            </div>`;
+        });
+        $('#otherItemsContainer').html(html);
+        // For display, request says "as per actual", so total might not be summed numerically in UI for these specific mocks
+      }
+
+
+      function updateSummary() {
+        let subtotal = 0;
+        const $mainBody = $('#summaryMainItemsBody');
+        $mainBody.empty();
+
+        $('#itemsTableBody tr').each(function () {
+          const $row = $(this);
+          const productText = $row.find('.product-select option:selected').text();
+          const qty = parseFloat($row.find('.qty-input').val()) || 0;
+          const price = parseFloat($row.find('.price-input').data('ge')) || parseFloat($row.find('.price-input').val()) || 0;
+          const amount = price * qty;
+
+          if (productText && productText !== 'Select Product') {
+            subtotal += amount;
+            $mainBody.append(`
+                    <tr>
+                        <td class="ps-3 py-1">${productText}</td>
+                        <td class="text-end py-1">${qty.toFixed(2)}</td>
+                        <td class="text-end py-1">${CURRENCY_SYMBOL}${price.toFixed(2)}</td>
+                        <td class="text-end pe-3 py-1">${CURRENCY_SYMBOL}${amount.toFixed(2)}</td>
+                    </tr>
+                `);
+          }
+        });
+
+        // Main Item Tax
+        const cgstPercent = 9; const sgstPercent = 9;
+        let taxValue = (subtotal * (cgstPercent + sgstPercent) / 100);
+        let itemTotal = subtotal + taxValue;
+
+        $('#summarySubtotal').text(subtotal.toFixed(2));
+        $('#summarySgstVal').text((subtotal * sgstPercent / 100).toFixed(2));
+        $('#summaryCgstVal').text((subtotal * cgstPercent / 100).toFixed(2));
+        $('#summaryItemTotal').text(itemTotal.toFixed(2));
+
+        // Packaging
+        let packagingTotal = renderPackagingItems();
+        $('#summaryTotalWithPackaging').text((itemTotal + packagingTotal).toFixed(2));
+
+        // Render Other Items (Mock)
+        renderOtherItems();
+
+        // Grand Total (Mock logic: Item Total + Packaging Total + Service/Others as mock "actuals" are not strictly calculable here without input)
+        // For this demo, Grand Total = Item Total + Packaging Total
+        let grandTotal = itemTotal + packagingTotal;
+        $('#grandTotalDisplay').text(grandTotal.toFixed(2));
+      }
+
+      $('#toggle_delivery_link_edit').on('click', function () {
+        const $input = $('#delivery_link');
+        $input.prop('readonly', !$input.prop('readonly')).css('background', $input.prop('readonly') ? '#dddddd' : '#fff');
+      });
+
+      $('#collect_on_delivery').on('change', function () {
+        if ($(this).is(':checked')) {
+          $('#collect_amount_wrapper').slideDown(); $('#amount_collected').prop('required', true);
+        } else {
+          $('#collect_amount_wrapper').slideUp(); $('#amount_collected').prop('required', false);
+        }
+      });
+
+      $('#saveUtencilMovementBtn').on('click', function () {
+        // Mock Save
+        Swal.fire('Saved', 'Utencil movement saved (Mock)', 'success');
+        $('#utencilModal').modal('hide');
+      });
+
+      $('input[name="bill_to_type"]').on('change', function () {
+        const type = $(this).val();
+        $('#bill_to_store_wrapper, #bill_to_user_wrapper, #bill_to_factory_wrapper').hide().find('select').prop('disabled', true);
+        if (type === 'store') $('#bill_to_store_wrapper').show().find('select').prop('disabled', false);
+        if (type === 'user') $('#bill_to_user_wrapper').show().find('select').prop('disabled', false);
+        if (type === 'factory') $('#bill_to_factory_wrapper').show().find('select').prop('disabled', false);
+      });
+
+      // Google Map Mock
+      $('.open-map-picker-btn').on('click', function () {
+        $('#googleMapModal').modal('show');
+      });
+      $('#applyMapSelectionBtn').on('click', function () {
+        $('#googleMapModal').modal('hide');
+        Swal.fire('Applied', 'Location applied (Mock)', 'success');
+      });
+
+      $('#receiver_store_id').on('change', function () {
+        // Mock auto-fill addresses
+        Swal.fire({
+          title: 'Fill Address?', text: "Auto-fill address from store?", icon: 'question', showCancelButton: true, confirmButtonText: 'Yes'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            $('#billing_name, #shipping_name').val('Mock Store Name');
+            $('#billing_address_1, #shipping_address_1').val('Mock Address Line 1');
+          }
+        });
+      });
+
+      $('#same_as_bill_to_switch').on('change', function () {
+        if ($(this).is(':checked')) {
+          $('#shipping_name').val($('#billing_name').val());
+          $('#shipping_address_1').val($('#billing_address_1').val());
+        }
+      });
+
+      // Initial render
+      renderPackagingItems();
+      renderOtherItems();
+    });
+  </script>
+
+
+
+</body>
+
+</html>
+```
