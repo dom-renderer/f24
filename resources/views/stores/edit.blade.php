@@ -153,7 +153,7 @@
                                 <select name="store_type" id="store_type" class="form-control" required>
                                     <option value=""></option>
                                     @foreach ($storeTypes as $typeRow)
-                                        <option value="{{ $typeRow->id }}" @if($typeRow->id == $store->store_type) selected @endif> {{ $typeRow->name }} </option>
+                                        <option value="{{ $typeRow->id }}" @if($typeRow->id == $store->store_type) selected @endif> {{ str_replace('-', ' ', ucwords($typeRow->name)) }} </option>
                                     @endforeach
                                 </select>
                                 @if ($errors->has('store_type'))
@@ -168,7 +168,7 @@
                                 <select name="model_type" id="model_type" class="form-control" required>
                                     <option value=""></option>
                                     @foreach ($modelTypes as $typeRow)
-                                        <option value="{{ $typeRow->id }}" @if($typeRow->id == $store->model_type) selected @endif> {{ $typeRow->name }} </option>
+                                        <option value="{{ $typeRow->id }}" @if($typeRow->id == $store->model_type) selected @endif> {{ ucwords($typeRow->name) }} </option>
                                     @endforeach
                                 </select>
                                 @if ($errors->has('model_type'))
@@ -180,7 +180,7 @@
                         <div class="col-md-2" id="pricing_tier_container">
                             <div class="">
                                 <label class="form-label" for="pricing_tier_id"> Pricing Tier </label>
-                                <select name="pricing_tier_id" id="pricing_tier_id" class="form-control">
+                                <select name="pricing_tier_id" id="pricing_tier_id" class="form-control" required>
                                     <option value="">Select Tier</option>
                                     @foreach ($pricingTiers as $tier)
                                         <option value="{{ $tier->id }}" @if($tier->id == $store->pricing_tier_id) selected @endif> {{ $tier->name }} </option>
@@ -419,7 +419,7 @@
                             <div class="">
                                 <label class="form-label" for="optime"> Opening Time </label>
                                 <input name="open_time" type="text" class="form-control timepicker"
-                                    value="{{ $store->open_time }}" placeholder="Opening Time" required>
+                                    value="{{ $store->open_time }}" placeholder="Opening Time">
                                 @if ($errors->has('open_time'))
                                     <span class="text-danger text-left">{{ $errors->first('open_time') }}</span>
                                 @endif
@@ -429,7 +429,7 @@
                             <div class="">
                                 <label class="form-label" for="cltime"> Closing Time </label>
                                 <input name="close_time" type="text" class="form-control timepicker"
-                                    value="{{ $store->close_time }}" placeholder="Closing Time" required>
+                                    value="{{ $store->close_time }}" placeholder="Closing Time">
                                 @if ($errors->has('close_time'))
                                     <span class="text-danger text-left">{{ $errors->first('close_time') }}</span>
                                 @endif
@@ -439,14 +439,14 @@
                             <div class="">
                                 <label class="form-label" for="optime"> Operation Start Time </label>
                                 <input name="ops_start_time" type="text" class="form-control timepicker"
-                                    value="{{ $store->ops_start_time }}" placeholder="Operation Start Time" required>
+                                    value="{{ $store->ops_start_time }}" placeholder="Operation Start Time">
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="">
                                 <label class="form-label" for="cltime"> Operation End Time </label>
                                 <input name="ops_end_time" type="text" class="form-control timepicker"
-                                    value="{{ $store->ops_end_time }}" placeholder="Operation End Time" required>
+                                    value="{{ $store->ops_end_time }}" placeholder="Operation End Time">
                             </div>
                         </div>
                     </div>

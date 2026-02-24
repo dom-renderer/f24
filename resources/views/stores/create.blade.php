@@ -40,7 +40,7 @@
                                     @foreach ($storeTypes as $typeRow)
                                         <option value="{{ $typeRow->id }}"
                                             @if (old('store_type') == $typeRow->id) selected @endif>
-                                            {{ str_replace('-', ' ', strtoupper($typeRow->name)) }}
+                                            {{ str_replace('-', ' ', ucwords($typeRow->name)) }}
                                         </option>
                                     @endforeach
                                 </select>
@@ -57,7 +57,7 @@
                                     @foreach ($modelTypes as $typeRow)
                                         <option value="{{ $typeRow->id }}"
                                             @if (old('model_type') == $typeRow->id) selected @endif>
-                                            {{ $typeRow->name }}
+                                            {{ ucwords($typeRow->name) }}
                                         </option>
                                     @endforeach
                                 </select>
@@ -69,7 +69,7 @@
                         <div class="col-md-2" id="pricing_tier_container">
                             <div class="">
                                 <label class="form-label" for="pricing_tier_id">Pricing Tier</label>
-                                <select name="pricing_tier_id" id="pricing_tier_id" class="form-control">
+                                <select name="pricing_tier_id" id="pricing_tier_id" class="form-control" required>
                                     <option value="">Select Tier</option>
                                     @foreach ($pricingTiers as $tier)
                                         <option value="{{ $tier->id }}"
@@ -293,7 +293,7 @@
                             <div class="">
                                 <label class="form-label" for="optime">Opening Time</label>
                                 <input name="open_time" type="text" class="form-control timepicker" id="optime"
-                                    value="{{ old('open_time') }}" placeholder="Opening Time" required>
+                                    value="{{ old('open_time') }}" placeholder="Opening Time">
                                 @if ($errors->has('open_time'))
                                     <span class="text-danger text-left">{{ $errors->first('open_time') }}</span>
                                 @endif
@@ -303,7 +303,7 @@
                             <div class="">
                                 <label class="form-label" for="cltime">Closing Time</label>
                                 <input name="close_time" type="text" class="form-control timepicker" id="cltime"
-                                    placeholder="Closing Time" value="{{ old('close_time') }}" required>
+                                    placeholder="Closing Time" value="{{ old('close_time') }}">
                                 @if ($errors->has('close_time'))
                                     <span class="text-danger text-left">{{ $errors->first('close_time') }}</span>
                                 @endif
@@ -314,15 +314,14 @@
                                 <label class="form-label" for="ops_start_time">Operation Start Time</label>
                                 <input name="ops_start_time" type="text" class="form-control timepicker"
                                     id="ops_start_time" value="{{ old('ops_start_time') }}"
-                                    placeholder="Operation Start Time" required>
+                                    placeholder="Operation Start Time">
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="">
                                 <label class="form-label" for="ops_end_time">Operation End Time</label>
                                 <input name="ops_end_time" type="text" class="form-control timepicker"
-                                    id="ops_end_time" placeholder="Operation End Time" value="{{ old('ops_end_time') }}"
-                                    required>
+                                    id="ops_end_time" placeholder="Operation End Time" value="{{ old('ops_end_time') }}">
                             </div>
                         </div>
                     </div>

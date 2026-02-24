@@ -62,12 +62,6 @@ class StoreController extends Controller
             ->when(!empty($request->filter_store_type) && $request->filter_store_type != 'all', function ($builder) use ($request) {
                 $builder->where('store_type', $request->filter_store_type);
             })
-            ->when(!empty($request->filter_start_date), function ($builder) use ($request) {
-                 // Assuming there might be a date filter in future or if user copied it from orders
-            })
-             ->when(!empty($request->filter_end_date), function ($builder) use ($request) {
-                 // Same as above
-            })
              ->when(!empty($request->filter_pricing_tier) && $request->filter_pricing_tier != 'all', function ($builder) use ($request) {
                 $builder->where('pricing_tier_id', $request->filter_pricing_tier);
             })
@@ -94,10 +88,10 @@ class StoreController extends Controller
                 return $row->thecity->city_name ?? '';
             })
             ->addColumn('store_type_name', function ($row) {
-                return $row->storetype->name ?? '';
+                return ucwords($row->storetype->name ?? '');
             })
             ->addColumn('model_type_name', function ($row) {
-                return $row->modeltype->name ?? '';
+                return ucwords($row->modeltype->name ?? '');
             })
             ->addColumn('pricing_tier_name', function ($row) {
                 return $row->pricingTier->name ?? 'N/A';
@@ -164,8 +158,6 @@ class StoreController extends Controller
                 'required',
                 Rule::unique('stores', 'code'),
             ],
-            'open_time' => 'required',
-            'close_time' => 'required',
             'city' => 'required',
             'employees' => 'required|array|min:1'
         ]);
@@ -243,8 +235,6 @@ class StoreController extends Controller
                 'required',
                 Rule::unique('stores', 'code')->ignore($stores),
             ],
-            'open_time' => 'required',
-            'close_time' => 'required',
             'city' => 'required',
             'employees' => 'required|array|min:1'
         ]);

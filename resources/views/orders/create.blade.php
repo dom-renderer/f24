@@ -251,6 +251,7 @@
                                     <input type="hidden" name="receiver_store_id" id="receiver_store_id">
                                     <input type="hidden" name="order_type" id="order_type" value="company">
                                 </div>
+
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label fw-semibold">Dispatched From <span class="text-danger">*</span>
                                     </label>
@@ -259,14 +260,27 @@
                                         <option value="">Select Store</option>
                                         @php
                                             $groupedStores = $storesWithType->groupBy(function ($s) {
-                                                return optional($s->storetype)->name ?: 'Other';
+                                                $tmp = optional($s->storetype)->name ?: 'Other';
+                                                $tmp2 = optional($s->modeltype)->name ?: 'company';
+
+                                                if ($tmp == 'store') {
+                                                    if ($tmp2 == 'company') {
+                                                        return 'company';
+                                                    } else {
+                                                        return 'franchise';
+                                                    }
+                                                } else if ($tmp == 'dealer-location') {
+                                                    return 'dealer';
+                                                } else {
+                                                    return 'company';
+                                                }
                                             });
                                         @endphp
                                         @foreach ($groupedStores as $typeName => $storeGroup)
                                             <optgroup label="{{ strtoupper($typeName) }}">
                                                 @foreach ($storeGroup as $store)
                                                     <option value="{{ $store->id }}"
-                                                        @if ($typeName == 'factory') selected @endif
+                                                        @if (isset($store->storetype->id) && $store->storetype->name == 'factory') selected @endif
                                                         data-order-type="{{ \Illuminate\Support\Str::contains(strtolower($typeName), 'franchise') ? 'franchise' : 'company' }}">
                                                         {{ $store->name }}
                                                     </option>
@@ -317,7 +331,7 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-12 mb-3">
+                                    <div class="col-12 mb-3" style="padding-left: 15px;padding-right:15px;">
                                         <label class="form-label">Delivery Remarks</label>
                                         <textarea class="form-control" name="customer_remark" id="customer_remark" rows="2"></textarea>
                                     </div>
@@ -950,9 +964,12 @@
                     'X-CSRF-TOKEN': "{{ csrf_token() }}"
                 }
             });
-            $('.select2').select2();
+            $('.select2').select2({
+                theme: 'classic'
+            });
 
             $('#modal_utencil_id').select2({
+                theme: 'classic',
                 dropdownParent: $('#utencilModal')
             });
 
@@ -1001,6 +1018,7 @@
 
             generateTimeSlots();
             $('#time_slot_select').select2({
+                theme: 'classic',
                 placeholder: 'Select Time Slot',
                 allowClear: true
             });
@@ -1109,14 +1127,17 @@
 
                 const $newRow = $(`tr[data-row-index="${rowIndex}"]`);
                 $newRow.find('.category-select').select2({
+                    theme: 'classic',
                     placeholder: 'Category',
                     width: '100%'
                 });
                 $newRow.find('.product-select').select2({
+                    theme: 'classic',
                     placeholder: 'Product',
                     width: '100%'
                 });
                 $newRow.find('.unit-select').select2({
+                    theme: 'classic',
                     placeholder: 'Unit',
                     width: '100%'
                 });
@@ -1133,6 +1154,7 @@
                 // init select2
                 $(`tr[data-row-index="${rowIndex - 1}"]`).find('.other-item-select, .tax-slab-select')
                     .select2({
+                        theme: 'classic',
                         placeholder: 'Select',
                         width: '100%'
                     });

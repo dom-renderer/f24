@@ -57,8 +57,8 @@
                 <div class="mb-3">
                     <label for="status" class="form-label">Status</label>
                     <select name="status" id="status" class="form-control">
-                        <option value="0" @if(!$category->status) selected @endif>InActive</option>
                         <option value="1" @if($category->status) selected @endif>Active</option>
+                        <option value="0" @if(!$category->status) selected @endif>Inactive</option>
                     </select>
                 </div>
 

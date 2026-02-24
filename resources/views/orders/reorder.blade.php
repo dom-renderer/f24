@@ -296,7 +296,7 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-12 mb-3">
+                                    <div class="col-12 mb-3" style="padding-left: 15px;padding-right:15px;">
                                         <label class="form-label">Delivery Remarks</label>
                                         <textarea class="form-control" name="customer_remark" id="customer_remark" rows="2">{{ $order->customer_remark }}</textarea>
                                     </div>
@@ -1090,7 +1090,9 @@
                     'X-CSRF-TOKEN': "{{ csrf_token() }}"
                 }
             });
-            $('.select2').select2();
+            $('.select2').select2({
+                theme: 'classic'
+            });
 
             $('.datepicker').datepicker({
                 dateFormat: 'yy-mm-dd',
@@ -1139,6 +1141,7 @@
 
             generateTimeSlots();
             $('#time_slot_select').select2({
+                theme: 'classic',
                 placeholder: 'Select Time Slot',
                 allowClear: true
             });
@@ -1209,6 +1212,7 @@
 
             // Utencil movement modal save (add only; receives handled via existing Utencils card)
             $('#modal_utencil_id').select2({
+                theme: 'classic',
                 dropdownParent: $('#utencilModal')
             });
 
@@ -1365,14 +1369,17 @@
                 }
 
                 $row.find('.category-select').select2({
+                    theme: 'classic',
                     placeholder: 'Category',
                     width: '100%'
                 });
                 $row.find('.product-select').select2({
+                    theme: 'classic',
                     placeholder: 'Product',
                     width: '100%'
                 });
                 $row.find('.unit-select').select2({
+                    theme: 'classic',
                     placeholder: 'Unit',
                     width: '100%'
                 });
@@ -1428,14 +1435,17 @@
                 $('#noItemsMessage').hide();
                 const $newRow = $(`tr[data-row-index="${rowIndex}"]`);
                 $newRow.find('.category-select').select2({
+                    theme: 'classic',
                     placeholder: 'Category',
                     width: '100%'
                 });
                 $newRow.find('.product-select').select2({
+                    theme: 'classic',
                     placeholder: 'Product',
                     width: '100%'
                 });
                 $newRow.find('.unit-select').select2({
+                    theme: 'classic',
                     placeholder: 'Unit',
                     width: '100%'
                 });
@@ -1973,6 +1983,7 @@
                 $('#utencilsTableBody').append(tpl);
                 const $row = $('#utencilsTableBody').find('tr.utencil-row').last();
                 $row.find('.utencil-select').select2({
+                    theme: 'classic',
                     width: '100%'
                 });
                 $('#utencilsEmpty').hide();
@@ -2375,6 +2386,7 @@
             $('#addOtherItemRow').on('click', function() {
                 $('#otherItemsTableBody').append(otherItemRowTemplate.replace(/__INDEX__/g, otherIndex++));
                 $('#otherItemsTableBody tr:last .select2').select2({
+                    theme: 'classic',
                     width: '100%'
                 });
                 $('#noOtherItemsMessage').hide();
