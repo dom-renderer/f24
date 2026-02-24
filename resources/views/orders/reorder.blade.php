@@ -795,8 +795,7 @@
                                         id="discount_amount" value="{{ $order->discount_amount }}" readonly
                                         style="background-color: #e9ecef;">
                                 </div>
-                                <small class="text-success"
-                                    id="discountValueDisplay">-{{ Helper::defaultCurrencySymbol() }}0.00</small>
+                                <small class="text-success d-none" id="discountValueDisplay">-{{ Helper::defaultCurrencySymbol() }}0.00</small>
                             </div>
 
                             {{-- Additional Charges --}}
@@ -827,8 +826,7 @@
                                 </div>
                                 <div class="d-flex justify-content-between w-100 mt-1">
                                     <span class="text-muted small">Total Additional Charges:</span>
-                                    <span class="text-primary small">{{ Helper::defaultCurrencySymbol() }}<span
-                                            id="additionalChargesTotalDisplay">0.00</span></span>
+                                    <span class="text-primary small">{{ Helper::defaultCurrencySymbol() }}<span id="additionalChargesTotalDisplay">0.00</span></span>
                                 </div>
                             </div>
 
@@ -854,10 +852,18 @@
                             <input type="hidden" id="tax_amount" value="{{ $order->tax_amount }}">
 
                             <hr>
-                            <div class="d-flex justify-content-between mb-2">
+                            <div class="d-flex justify-content-between w-100 mt-1">
+                                <span class="text-muted small">Sub Total:</span>
+                                <span class="text-primary small">{{ Helper::defaultCurrencySymbol() }}<span id="subTotalDisplay">0.00</span></span>
+                            </div>
+
+                            <div class="d-flex justify-content-between w-100 mt-2">
+                                <span class="text-muted small">Discount:</span>
+                                <span class="text-primary small">{{ Helper::defaultCurrencySymbol() }}<span id="discountDisplay">0.00</span></span>
+                            </div>
+                            <div class="d-flex justify-content-between mt-2">
                                 <span class="fw-bold">Grand Total:</span>
-                                <span class="grand-total text-primary">{{ Helper::defaultCurrencySymbol() }}<span
-                                        id="grandTotalDisplay">0.00</span></span>
+                                <span class="grand-total text-primary">{{ Helper::defaultCurrencySymbol() }}<span id="grandTotalDisplay">0.00</span></span>
                             </div>
                         </div>
                     </div>
@@ -1927,7 +1933,8 @@
 
                 $('#totalItemsCount').text(totalItems);
                 $('#subtotalDisplay').text(totalBasePrice.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2}));
-                $('#discountValueDisplay').text('-' + CURRENCY_SYMBOL + discountValue.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+                $('#subTotalDisplay').text(parseFloat(totalBasePrice + additionalChargesTotal + totalCgst + totalSgst).toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2}));
+                $('#discountDisplay').text(discountValue.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2}));
 
                 $('#additionalChargesTotalDisplay').text(additionalChargesTotal.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2}));
                 $('#grandTotalDisplay').text(grandTotal.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2}));
@@ -2297,11 +2304,11 @@
                         _token: $('meta[name="csrf-token"]').attr('content')
                     },
                     beforeSend: function() {
-                        $(`#${toPlace}`).text('');
+                        $(`#${toPlace}`).val('');
                         $('body').find('.LoaderSec').removeClass('d-none');
                     },
                     success: function(response) {
-                        $(`#${toPlace}`).text(response.address);
+                        $(`#${toPlace}`).val(response.address);
                     },
                     error: function(xhr) {
                         let errorMsg = 'Something went wrong';
