@@ -359,7 +359,6 @@
                 <div class="bold" style="margin-bottom:6px;">Summary</div>
                 <table class="summary-table">
                     <tr><td>Gross Total</td><td class="t-right">{{ number_format($order->total_amount, 3) }}</td></tr>
-                    <tr><td>Discounts</td><td class="t-right">{{ number_format($order->discount_amount, 3) }}</td></tr>
                     @foreach ($allSlabs as $slabId => $slabData)
                         <tr><td>{{ $slabData['name'] }}</td><td class="t-right">{{ number_format($slabData['data']['product_tax_total'] ?? 0, 3) }}</td></tr>
                     @endforeach
